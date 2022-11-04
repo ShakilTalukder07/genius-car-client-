@@ -25,7 +25,7 @@ const Orders = () => {
             })
                 .then(res => res.json())
                 .then(data => {
-                    console.log(data);
+                    // console.log(data);
                     if (data.deletedCount > 0) {
                         alert('Deleted Successfully')
                         const remaining = orders.filter(odr => odr._id !== id);
@@ -45,13 +45,13 @@ const Orders = () => {
         })
             .then(res => res.json())
             .then(data => {
-                console.log(data)
+                // console.log(data)
                 if (data.modifiedCount > 0) {
                     const remaining = orders.filter(odr => odr._id !== id);
                     const approving = orders.find(odr => odr._id === id);
-                    approving.stats = 'Approved'
+                    approving.status = 'Approved'
 
-                    const newOrders = [ approving, ...remaining ];
+                    const newOrders = [approving, ...remaining];
                     setOrders(newOrders);
                 }
             })

@@ -1,14 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { json } from 'react-router-dom';
+
 
 const OrderRow = ({ order, handleDelete, handleStatusUpdate }) => {
     const { _id, serviceName, phone, customer, price, service, status } = order;
     const [orderService, setOrderService] = useState({})
+    // console.log(orderService);
+    // console.log(service);
 
     useEffect(() => {
-        fetch(`http://localhost:5000/services/${service.id}`)
-            .then(res => res.json())
-            .then(data => setOrderService(data))
+        if (service) {
+            fetch(`http://localhost:5000/services/${service}`)
+                .then(res => res.json())
+                .then(data => setOrderService(data))
+                // .then(data => console.log(data))
+        }
     }, [service])
 
 
@@ -40,9 +45,9 @@ const OrderRow = ({ order, handleDelete, handleStatusUpdate }) => {
             </td>
             <td>Purple</td>
             <th>
-                <button 
-                onClick={()=> handleStatusUpdate(_id)}
-                className="btn btn-ghost btn-xs"> {status ? status : 'Pending'}</button>
+                <button
+                    onClick={() => handleStatusUpdate(_id)}
+                    className="btn btn-ghost btn-xs"> {status ? status : 'Pending'}</button>
             </th>
         </tr>
     );
