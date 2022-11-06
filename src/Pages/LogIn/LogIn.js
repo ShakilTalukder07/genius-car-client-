@@ -1,25 +1,49 @@
 import React, { useContext } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import img from '../../assets/images/login/login.svg';
 import { AuthContext } from '../../context/AuthProvider/AuthProvider';
 
 const LogIn = () => {
 
-const { loginUser } = useContext(AuthContext);
+    const { loginUser } = useContext(AuthContext);
+    const location = useLocation();
+    const navigate = useNavigate();
+
+    const from = location.state?.from?.pathname || '/';
 
     const handleLogin = event => {
         event.preventDefault();
         const form = event.target;
-        const email = email.value;
-        const password = password.value;
+        const email = form.email.value;
+        const password = form.password.value;
 
         loginUser(email, password)
-        .then( result => {
-            const user = result.user;
-            console.log(user);
-        })
-        .catch( error => console.error(error))
-        
+            .then(result => {
+                const user = result.user;
+
+                const currentUser = {
+                    email: user.email
+                }
+                // console.log(currentUser);
+
+                // get jwt token
+                fetch('http://localhost:5000/jwt', {
+                    method: 'POST',
+                    headers: {
+                        'content-type': 'application/json'
+                    },
+                    body: JSON.stringify(currentUser)
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        // console.log(data);
+                        // localStorage is the easiest but not the best place to store token
+                        localStorage.setItem('geniusToken', data.token)
+                        navigate(from, { replace: true });
+                    })
+
+            })
+            .catch(error => console.error(error))
     }
 
     return (
@@ -42,7 +66,7 @@ const { loginUser } = useContext(AuthContext);
                                 <label className="label">
                                     <span className="label-text">Password</span>
                                 </label>
-                                <input type="text" name='password' placeholder="password" className="input input-bordered" required />
+                                <input type="password" name='password' placeholder="password" className="input input-bordered" required />
                                 <label className="label">
                                     <Link href="#" className="label-text-alt link link-hover">Forgot password?</Link>
                                 </label>
