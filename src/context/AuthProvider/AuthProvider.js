@@ -1,11 +1,12 @@
 import React, { createContext, useEffect, useState } from 'react';
-import { getAuth, createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import app from '../../firebase/firebase.config';
 
 
 export const AuthContext = createContext()
 const auth = getAuth(app);
 
+const googleProvider = new GoogleAuthProvider();
 
 const AuthProvider = ({ children }) => {
 
@@ -22,7 +23,14 @@ const AuthProvider = ({ children }) => {
         return signInWithEmailAndPassword(auth, email, password);
     }
 
+    const googleSignIn = () =>{
+        setLoading(true)
+        return signInWithPopup( auth, googleProvider )
+    }
+
     const logOut = () =>{
+        // remove user from site if user in not have valid token 
+        localStorage.removeItem('geniusToken');
         return signOut(auth);
     }
 
@@ -41,6 +49,7 @@ const AuthProvider = ({ children }) => {
         loading,
         createUser,
         loginUser,
+        googleSignIn,
         logOut,
     }
 

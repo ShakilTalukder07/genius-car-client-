@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import img from '../../assets/images/login/login.svg';
 import { AuthContext } from '../../context/AuthProvider/AuthProvider';
+import SocialLogin from '../Shared/SocialLogin/SocialLogin';
 
 const LogIn = () => {
 
@@ -20,7 +21,6 @@ const LogIn = () => {
         loginUser(email, password)
             .then(result => {
                 const user = result.user;
-
                 const currentUser = {
                     email: user.email
                 }
@@ -38,9 +38,9 @@ const LogIn = () => {
                     .then(data => {
                         // console.log(data);
                         // localStorage is the easiest but not the best place to store token
-                        localStorage.setItem('geniusToken', data.token)
+                        localStorage.setItem('genius-token', data.token)
                         navigate(from, { replace: true });
-                    })
+                    });
 
             })
             .catch(error => console.error(error))
@@ -76,6 +76,7 @@ const LogIn = () => {
                             </div>
                         </form>
                         <p className='text-center'>New to Genius Car <Link className='text-orange-600 font-bold' to='/signup'> Sign Up</Link> </p>
+                        <SocialLogin></SocialLogin>
                     </div>
                 </div>
             </div>
